@@ -32,19 +32,57 @@ def scrapeWebsite(source,destination,date):
 	hov.perform()
 	time.sleep(1)
 
+	#Try to print out all the different attributes from JUST the first element
+	# pathToFirstElemLength = '//*[@id="4d7ded7b19fd4946b25526c94ef76a3634ed8fac852a28bece2368b73ee2800fcd5701ec4aa59898b872713bc8ffe353ecd233c745b206d0e154bc154f4e87f7b50867c321d50a993424cf6f04aca609f6525edcf53a19260513ef4810a586f9"]/div[1]'
+	# first =  driver.find_elements_by_xpath(pathToFirstElemLength)
+	# hello = first[0].text.split('\n')
+	# print(first[0].text)
+	# print(hello)
+
+	duration = []
+	stops = []
+	deptTime = []
+	deptAir = []
+	arrTime = []
+	arrAir = []
+	price = []
 
 	xpathToInfiniteList = '//*[@id="trip-list-sections"]/div[2]/div[1]/div[5]'   #string that holds the xpath to the flights section
 	no_of_pagedowns = 3		#Number of times we wish to scroll the page down (Need this here to load more flights in)
 	elem1 = driver.find_element_by_tag_name("body")   #The element that we will be scrolling down
 	while no_of_pagedowns:
 		for elem in driver.find_elements_by_xpath(xpathToInfiniteList):  #Xpath to the infinite-trip-list div #Only works properly when the mouse is over the flight section for some reason
+			hello = elem.text.split('\n')
+			i = 0
+			lengthOfHello = len(hello)
+			while i < lengthOfHello:
+				if (i % 7  == 0):
+					duration.append(hello[i])
+				if (i%7 == 1):
+					stops.append(hello[i])
+				if (i%7 == 2):
+					deptTime.append(hello[i])	
+				if (i%7 == 3):
+					deptAir.append(hello[i])	
+				if (i%7 == 4):
+					arrTime.append(hello[i])	
+				if (i%7 == 5):
+					arrAir.append(hello[i])	
+				if (i%7 == 6):
+					price.append(hello[i])																									
+				i = i+1
 			print (elem.text)
-			print(" ------------------------------------------------------------------------------------------------- ")
 
 		elem1.send_keys(Keys.PAGE_DOWN)
 		time.sleep(1)  #Time in between scrolls
 		no_of_pagedowns-=1
-
+	print("duration: ", duration)
+	print("stops: ", stops)
+	print("deptTime: ", deptTime)
+	print("deptAir: ", deptAir)
+	print("arrTime: ", arrAir)
+	print("arrAir: ", arrAir)
+	print("price: ", price)
 	time.sleep(5)  #Lets the browser stay open for 5s
 
 
