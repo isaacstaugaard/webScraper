@@ -8,7 +8,8 @@ from selenium.webdriver.common.by import By                       #Allows the us
 from selenium.webdriver.support.ui import WebDriverWait			  #Allows for the driver to wait for dadta
 from selenium.webdriver.common.keys import Keys                   #Allows for scrolling down (PGDOWN key)
 from selenium.webdriver.common.action_chains import ActionChains  #Allows for mouseOver
-
+import smtplib													  #Allows use of email
+ 
 
 def scrapeWebsite(source,destination,date):
 	driver = webdriver.Chrome()
@@ -94,6 +95,12 @@ def scrapeWebsite(source,destination,date):
 		k += 1
 	print("Flights: ", flights)
 
+	lowestPrice = int(price[0].replace("$",""))
+	if (lowestPrice <= targetPrice):
+		return 'YES'
+	else:
+		return 'NO'
+
 	time.sleep(5)  #Lets the browser stay open for 5s
 	#driver.quit()
 
@@ -108,6 +115,16 @@ if __name__=="__main__":
 	source = args.source
 	destination = args.destination
 	date = args.date
+	global targetPrice
+	targetPrice = 45
 	print ("Fetching flight details\n")
 	scraped_data = scrapeWebsite(source,destination,date)
+
+	if (scraped_data == 'YES'):
+		server = smtplib.SMTP('smtp.gmail.com', 587)
+		server.starttls()
+		server.login("INSERT YOUR EMAIL HERE", "INSERT EMAIL PASSWORD HERE")
+		msg = "Flight cheaper than " + str(targetPrice) + " on " + date + "!!!"
+		server.sendmail("INSERT YOUR EMAIL", "INSERT TARGET EMAIL", msg)
+		server.quit()
 
